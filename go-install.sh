@@ -1,21 +1,48 @@
 #!/bin/bash
 
-VERSION=`curl https://golang.org/VERSION?m=text`
+echo "Removing the current version ..."
+
+sudo apt update -y >/dev/null 2>&1
+sudo apt remove golang-go -y >/dev/null 2>&1
+
+sudo rm -rf /usr/local/go
+
+VERSION=`curl -s https://golang.org/VERSION?m=text`
 ARCH=`uname -m`
 
-wget https://golang.org/dl/$VERSION.linux-amd64$ARCH.tar.gz -o $VERSION.tar.gz
+if [ -z "${ARCH##*armv*}" ]; then
+	ARCH=armv6l
+fi
 
+if [ -z "${ARCH##*x86_64*}" ]; then
+        ARCH=amd64
+fi
+
+echo "Downoading https://golang.org/dl/${VERSION}.linux-${ARCH}.tar.gz"
+
+wget -q https://golang.org/dl/$VERSION.linux-$ARCH.tar.gz -O $VERSION.tar.gz
+
+echo "Installing Go ${VERSION} ..."
 sudo tar -C /usr/local -xzf $VERSION.tar.gz
 
-rm $VERSION.targgz
+rm $VERSION.tar*
 
-export GOROOT=/usr/local/go
-export PATH=$PATH:$GOROOT/bin
+source ./go-path
 
-export GOPATH=$HOME/golib:$HOME/code
-export PATH=$PATH:$GOPATH/bin
+mkdir $HOME/golib $HOME/code  >/dev/null 2>&1
 
-mkdir $HOME/golib $HOME/code
-cd $HOME/code
-./go-tools.sh
+echo "Installing Go tools ..."
 
+go get -u -v github.com/nsf/gocode
+go get -u -v github.com/rogpeppe/godef
+go get -u -v golang.org/x/lint/golint
+go get -u -v github.com/lukehoban/go-outline
+go get -u -v sourcegraph.com/sqs/goreturns
+go get -u -v golang.org/x/tools/cmd/gorename
+go get -u -v github.com/tpng/gopkgs
+go get -u -v github.com/newhook/go-symbols
+go get -u -v golang.org/x/tools/cmd/guru
+
+go version
+
+echo "Installation completed."
