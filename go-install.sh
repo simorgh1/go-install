@@ -36,12 +36,15 @@ echo "Installing Go tools ..."
 go get -u -v github.com/nsf/gocode
 go get -u -v github.com/rogpeppe/godef
 go get -u -v golang.org/x/lint/golint
-go get -u -v github.com/lukehoban/go-outline
 go get -u -v sourcegraph.com/sqs/goreturns
 go get -u -v golang.org/x/tools/cmd/gorename
 go get -u -v github.com/tpng/gopkgs
 go get -u -v github.com/newhook/go-symbols
 go get -u -v golang.org/x/tools/cmd/guru
+go get -v golang.org/x/tools/gopls
+go get -v github.com/ramya-rao-a/go-outline
+go get -v github.com/uudashr/gopkgs/v2/cmd/gopkgs
+go get -v github.com/go-delve/delve/cmd/dlv
 
 go version
 
